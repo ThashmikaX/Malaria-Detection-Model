@@ -40,7 +40,7 @@ const UI = () => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:8000/predict/svm', {
+      const response = await fetch('https://malaria-detection-model-production.up.railway.app/predict/svm', {
         method: 'POST',
         body: formData,
       });
