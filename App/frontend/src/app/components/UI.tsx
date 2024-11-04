@@ -3,6 +3,7 @@
 import { SetStateAction, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import * as Toast from '@radix-ui/react-toast';
+import Image from 'next/image';
 
 interface ValidationResult {
   predicted_class: string;
@@ -107,7 +108,7 @@ const UI = () => {
               </div>
             ) : (
               <div className="relative">
-                <img src={preview} alt="Preview" className="max-h-96 mx-auto rounded shadow-lg" />
+                {file && <Image src={preview} alt="Preview" width={500} height={500} />}
                 <button
                   onClick={clearImage}
                   className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full shadow"
