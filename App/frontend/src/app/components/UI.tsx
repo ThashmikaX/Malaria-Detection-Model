@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import * as Toast from '@radix-ui/react-toast';
 
