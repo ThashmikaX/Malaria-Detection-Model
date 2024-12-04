@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import io
 import numpy as np
 from PIL import Image
@@ -9,9 +10,9 @@ import joblib
 app = FastAPI()
 
 # Load the saved models
-model = joblib.load('models/malaria_svc_model-v2.joblib')
+svm_model = joblib.load('models/malaria_svc_model-v2.joblib')
 pca = joblib.load('models/malaria_pca-v2.joblib')
-
+logistic_regression_model = joblib.load('models/logistic_regression_model.pkl')
 
 def preprocess_image(image_bytes):
     # Convert bytes to PIL Image
@@ -40,7 +41,6 @@ def preprocess_image(image_bytes):
 
     return img_reduced
 
-
 def padding(image, size):
     desired_size = size
     old_size = image.size
@@ -52,15 +52,13 @@ def padding(image, size):
                          (desired_size - new_size[1]) // 2))
     return new_im
 
-
 def brighten(image):
     max_ = np.max(image)
     image[image == 0.0] = max_
     return image
 
-
-@app.post("/predict/svm")  # Changed endpoint to match your request
-async def predict(file: UploadFile = File(...)):
+@app.post("/predict/svm")
+async def predict_svm(file: UploadFile = File(...)):
     try:
         # Read image file
         image_bytes = await file.read()
@@ -69,23 +67,24 @@ async def predict(file: UploadFile = File(...)):
         processed_image = preprocess_image(image_bytes)
 
         # Make prediction
-        prediction = model.predict(processed_image)
+        prediction = svm_model.predict(processed_image)
 
         # Get class name
         class_name = "Parasitized" if prediction[0] == 1 else "Uninfected"
 
         # Try to get probability if available
         try:
-            probability = model.predict_proba(processed_image)
+            probability = svm_model.predict_proba(processed_image)
             confidence = float(max(probability[0]))
         except:
             # If probability is not available, use decision function as a proxy for confidence
-            decision_score = float(abs(model.decision_function(processed_image)[0]))
+            decision_score = float(abs(svm_model.decision_function(processed_image)[0]))
             confidence = 1 / (1 + np.exp(-decision_score))  # sigmoid transformation
 
         return JSONResponse({
             "class": class_name,
-            "confidence": confidence
+            "confidence": confidence,
+            "model": "SVM"
         })
 
     except Exception as e:
@@ -93,10 +92,41 @@ async def predict(file: UploadFile = File(...)):
             "error": str(e)
         }, status_code=500)
 
+@app.post("/predict/logistic")
+async def predict_logistic(file: UploadFile = File(...)):
+    try:
+        # Read image file
+        image_bytes = await file.read()
 
-# For CORS support (if needed)
-from fastapi.middleware.cors import CORSMiddleware
+        # Preprocess the image
+        processed_image = preprocess_image(image_bytes)
 
+        # Make prediction
+        prediction = logistic_regression_model.predict(processed_image)
+
+        # Get class name
+        class_name = "Parasitized" if prediction[0] == 1 else "Uninfected"
+
+        # Get probability
+        try:
+            probability = logistic_regression_model.predict_proba(processed_image)
+            confidence = float(max(probability[0]))
+        except:
+            # Fallback if predict_proba is not available
+            confidence = abs(logistic_regression_model.decision_function(processed_image)[0])
+
+        return JSONResponse({
+            "class": class_name,
+            "confidence": confidence,
+            "model": "Logistic Regression"
+        })
+
+    except Exception as e:
+        return JSONResponse({
+            "error": str(e)
+        }, status_code=500)
+
+# CORS Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
@@ -105,4 +135,4 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-# Run with: uvicorn app:app --reload
+# Run with: uvicorn main:app --reload
