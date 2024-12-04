@@ -89,7 +89,7 @@ const UI = () => {
           id="model-select"
           value={selectedModel}
           onChange={(e) => setSelectedModel(e.target.value)}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          className="text-black mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         >
           <option value="svm">Support Vector Machine (SVM)</option>
           <option value="logistic">Logistic Regression</option>
