@@ -17,6 +17,7 @@ const UI = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [toastOpen, setToastOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [selectedModel, setSelectedModel] = useState<string>('svm');
 
   // File change handler
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
@@ -41,7 +42,7 @@ const UI = () => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://malaria-detection-model-production.up.railway.app/predict/svm', {
+      const response = await fetch(`https://malaria-detection-model-production.up.railway.app/predict/${selectedModel}`, {
         method: 'POST',
         body: formData,
       });
@@ -81,8 +82,22 @@ const UI = () => {
     <div className="max-w-4xl mx-auto p-6 h-full relative flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-6 text-center">Malaria Detection using Cell Images</h1>
 
+      {/* Model Selection Dropdown */}
+      <div className="w-full mb-4">
+        <label htmlFor="model-select" className="block text-sm font-medium text-gray-700">Select Prediction Model</label>
+        <select
+          id="model-select"
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+        >
+          <option value="svm">Support Vector Machine (SVM)</option>
+          <option value="logistic">Logistic Regression</option>
+        </select>
+      </div>
+
       <div className={`flex flex-col lg:flex-row w-full ${result ? 'items-center justify-center gap-x-2' : 'justify-center items-center'}`}>
-        {/* Image Upload Component */}
+        {/* Rest of the previous component remains the same */}
         <div
           className={`flex-1 transition-all duration-500 transform h-full ${result ? 'lg:-translate-x-20' : 'flex justify-center items-center h-full'}`}
         >
@@ -146,7 +161,7 @@ const UI = () => {
         rel="noopener noreferrer"
         className="mt-4 text-blue-500 hover:underline text-sm"
       >
-        Source of the project
+        https://github.com/ThashmikaX/Malaria-Detection-Model
       </a>
 
       {/* Toast Notification */}
