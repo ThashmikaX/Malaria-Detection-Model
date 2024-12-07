@@ -1,7 +1,7 @@
 "use client";
 
 import { SetStateAction, useState } from 'react';
-import { Upload, X, Info, Shield, FileCheck, FileX } from 'lucide-react';
+import { Upload, X, Info, Shield, FileCheck, FileX, AlertTriangle } from 'lucide-react';
 import * as Toast from '@radix-ui/react-toast';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import Image from 'next/image';
@@ -90,6 +90,14 @@ const UI = () => {
             <Shield className="w-10 h-10 text-blue-600" />
             Malaria Detection using Machine Learning
           </h1>
+
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 flex items-center">
+            <AlertTriangle className="w-6 h-6 text-yellow-600 mr-3" />
+            <p className="text-yellow-700 text-sm">
+              <strong>Important:</strong> This tool is designed to analyze cell microscopy images for malaria detection. 
+              Please upload only microscopic blood cell images taken under a microscope.
+            </p>
+          </div>
 
           {/* Model Selection with Tooltip */}
           <div className="w-full mb-6">
