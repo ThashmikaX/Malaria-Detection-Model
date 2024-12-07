@@ -84,7 +84,7 @@ const UI = () => {
 
   return (
     <Tooltip.Provider>
-      <div className="max-w-full w-full pt-[500px] mx-auto p-6 h-full relative flex flex-col items-center bg-gradient-to-br  min-h-screen">
+      <div className="max-w-full w-full mx-auto p-6 h-full relative flex flex-col items-center bg-gradient-to-br ">
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           <h1 className="text-4xl font-extrabold mb-6 text-center text-blue-900 flex items-center justify-center gap-3">
             <Shield className="w-10 h-10 text-blue-600" />
