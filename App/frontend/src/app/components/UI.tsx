@@ -88,7 +88,7 @@ const UI = () => {
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           <h1 className="text-4xl font-extrabold mb-6 text-center text-blue-900 flex items-center justify-center gap-3">
             <Shield className="w-10 h-10 text-blue-600" />
-            Malaria Cell Detection
+            Malaria Detection using Machine Learning
           </h1>
 
           {/* Model Selection with Tooltip */}
