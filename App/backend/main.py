@@ -6,6 +6,10 @@ import numpy as np
 from PIL import Image
 from skimage import transform, color
 import joblib
+import warnings
+from sklearn.exceptions import InconsistentVersionWarning
+
+warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
 app = FastAPI()
 
